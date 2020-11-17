@@ -1,31 +1,36 @@
+<link rel="stylesheet" href="static/css/styles.css">
 <?php require_once(__DIR__ . "/partials/nav.php"); ?>
+
     <form method="POST">
-        <label for="email">Email:</label>
+        <label for="email">Email</label>
         <input type="email" id="email" name="email" required/>
-        <label for="p1">Password:</label>
+
+        <label for="p1">Password</label>
         <input type="password" id="p1" name="password" required/>
+
         <input type="submit" name="login" value="Login"/>
     </form>
 
 <?php
 if (isset($_POST["login"])) {
+
     $email = null;
     $password = null;
     if (isset($_POST["email"])) {
         $email = $_POST["email"];
     }
+
     if (isset($_POST["password"])) {
         $password = $_POST["password"];
     }
+
     $isValid = true;
     if (!isset($email) || !isset($password)) {
         $isValid = false;
-        flash("Email or password missing");
     }
     if (!strpos($email, "@")) {
         $isValid = false;
-        //echo "<br>Invalid email<br>";
-        flash("Invalid email");
+        echo "<br>Email is invalid<br>";
     }
     if ($isValid) {
         $db = getDB();
@@ -34,11 +39,10 @@ if (isset($_POST["login"])) {
 
             $params = array(":email" => $email);
             $r = $stmt->execute($params);
-            //echo "db returned: " . var_export($r, true);
+            echo "db returned: " . var_export($r, true);
             $e = $stmt->errorInfo();
             if ($e[0] != "00000") {
-                //echo "uh oh something went wrong: " . var_export($e, true);
-                flash("Something went wrong, please try again");
+                echo "uh oh something went wrong: " . var_export($e, true);
             }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result && isset($result["password"])) {
@@ -59,20 +63,19 @@ SELECT Roles.name FROM Roles JOIN UserRoles on Roles.id = UserRoles.role_id wher
                         $_SESSION["user"]["roles"] = [];
                     }
                     //on successful login let's serve-side redirect the user to the home page.
-                    flash("Log in successful");
-                    die(header("Location: home.php"));
+                    header("Location: home.php");
                 }
                 else {
-                    flash("Invalid password");
+                    echo "<br>Sorry, the password is invalid.<br>";
                 }
             }
             else {
-                flash("Invalid user");
+                echo "<br>Sorry, the username is invalid.<br>";
             }
         }
     }
     else {
-        flash("There was a validation issue");
+        echo "There was a validation issue";
     }
 }
 ?>
