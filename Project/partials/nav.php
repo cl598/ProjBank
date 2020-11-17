@@ -5,10 +5,6 @@
 require_once(__DIR__ . "/../lib/helpers.php");
 ?>
 
-<?php
-getURL();
-?>
-
 <nav>
     <ul class="nav">
 

@@ -6,10 +6,7 @@ require_once(__DIR__ . "/db.php");
 
 // Office hour assistance
 function getURL($path){
-    if(substr($path, 0, 1) == "/"){
-        return $path;
-    }
-    return $_SERVER['REQUEST_URI'] . "/ProjBank/Project/$path";
+    return $_SERVER["REQUEST_URI"] . "/ProjBank/Project/$path";
 }
 
 function is_logged_in() {
