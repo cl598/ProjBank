@@ -3,8 +3,8 @@
 <?php
 if (!has_role("Admin")) {
     // This will redirect to login and kill the rest of this script (prevent it from executing)
-    // flash("Sorry, you do not have permission to access this page.");
-    // die(header("Location:" . getURL("login.php")));
+    flash("Sorry, you do not have permission to access this page.");
+    die(header("Location:" . getURL("login.php")));
 }
 ?>
 <?php
@@ -26,7 +26,7 @@ if(isset($_POST["save"])){
     $nst = date('Y-m-d H:i:s');
     $user = get_user_id();
     $db = getDB();
-    $stmt = $db->prepare("INSERT INTO Transactions (name, state, actnum, acttype, bal, next_stage_time, user_id) VALUES(:name, :state, :nst,:user)");
+    $stmt = $db->prepare( "INSERT INTO Transactions (name, state, actnum, acttype, bal, next_stage_time, user_id) VALUES(:name, :state, :nst,:user)");
     $r = $stmt->execute([
         ":name"=>$name,
         ":state"=>$state,

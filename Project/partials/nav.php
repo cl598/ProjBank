@@ -12,6 +12,12 @@ require_once(__DIR__ . "/../lib/helpers.php");
         <?php if (!is_logged_in()): ?>
             <li><a href="../login.php">Login</a></li>
             <li><a href="../register.php">Register</a></li>
+            <li><a href="#">Create Account</a></li>
+            <li><a href="#">Accounts</a></li>
+            <li><a href="#">Deposit</a></li>
+            <li><a href="#">Withdraw</a></li>
+            <li><a href="#">Transfer</a></li>
+
         <?php endif; ?>
 
         <?php if (has_role("Admin")): ?>

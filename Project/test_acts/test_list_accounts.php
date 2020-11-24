@@ -3,8 +3,8 @@
 <?php
 if (!has_role("Admin")) {
     // This will redirect to login and kill the rest of this script (prevent it from executing)
-    flash("Sorry, you do not have permission to access this page.");
-    die(header("Location:" . getURL("login.php")));
+    //flash("Sorry, you do not have permission to access this page.");
+    //die(header("Location:" . getURL("login.php")));
 }
 ?>
 <?php
@@ -14,9 +14,22 @@ if (isset($_POST["query"])) {
     $query = $_POST["query"];
 }
 if (isset($_POST["search"]) && !empty($query)) {
+    $name = $_POST["name"];
+    $actnum = $_POST["account_number"];
+    $acttype = $_POST["account_type"];
+    $bal = $_POST["balance"];
+    $nst = date('Y-m-d H:i:s');
+    $user = get_user_id();
     $db = getDB();
-    $stmt = $db->prepare("SELECT id,name,state,next_stage_time, user_id from Accounts WHERE name like :q LIMIT 10");
-    $r = $stmt->execute([":q" => "%$query%"]);
+    $stmt = $db->prepare("INSERT INTO Accounts (name, actnum, acttype, bal, user_id) VALUES(:name, :state, :nst,:user)");
+    $r = $stmt->execute([
+        ":name"=>$name,
+        ":actnum"=>$actnum,
+        ":acttype"=>$acttype,
+        ":bal"=>$bal,
+        ":nst"=>$nst,
+        ":user"=>$user
+    ]);
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -35,20 +48,20 @@ if (isset($_POST["search"]) && !empty($query)) {
             <?php foreach ($results as $r): ?>
                 <div class="list-group-item">
                     <div>
-                        <div>Name:</div>
+                        <div>Name is </div>
                         <div><?php safer_echo($r["name"]); ?></div>
                     </div>
                     <div>
-                        <div>State:</div>
-                        <div><?php getState($r["state"]); ?></div>
+                        <div>Account number is </div>
+                        <div><?php safer_echo($r["actnum"]); ?></div>
                     </div>
                     <div>
-                        <div>Next Stage:</div>
-                        <div><?php safer_echo($r["next_stage_time"]); ?></div>
+                        <div>Account type is </div>
+                        <div><?php safer_echo($r["acttype"]); ?></div>
                     </div>
                     <div>
-                        <div>Owner Id:</div>
-                        <div><?php safer_echo($r["user_id"]); ?></div>
+                        <div>Balance is </div>
+                        <div><?php safer_echo($r["bal"]); ?></div>
                     </div>
                     <div>
                         <a type="button" href="test_edit_accounts.php?id=<?php safer_echo($r['id']); ?>">Edit</a>

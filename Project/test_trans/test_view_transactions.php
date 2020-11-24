@@ -16,11 +16,28 @@ if (isset($_GET["id"])) {
 // Fetching
 $result = [];
 if (isset($id)) {
+    $name = $_POST["name"];
+    $state = $_POST["state"];
+    $actnum = $_POST["account_number"];
+    $acttype = $_POST["account_type"];
+    $bal = $_POST["balance"];
+    $nst = date('Y-m-d H:i:s');
+    $user = get_user_id();
     $db = getDB();
-    $stmt = $db->prepare("SELECT id,name,state,next_stage_time, user_id from Transactions WHERE name like :q LIMIT 10");
-    $r = $stmt->execute([":id" => $id]);
+    $stmt = $db->prepare("INSERT INTO Accounts (name, actnum, acttype, bal, user_id) VALUES(:name, :state, :nst,:user)");
+    $r = $stmt->execute([
+            ":id" => $id,
+            ":name"=>$name,
+            ":state"=>$state,
+            ":actnum"=>$actnum,
+            ":acttype"=>$acttype,
+            ":bal"=>$bal,
+            ":nst"=>$nst,
+            ":user"=>$user
+    ]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$result) {
+
         $e = $stmt->errorInfo();
         flash($e[2]);
     }
@@ -35,10 +52,8 @@ if (isset($id)) {
             <div>
                 <p>Accounts</p>
                 <div>Account number is <?php safer_echo($result["account_number"]); ?></div>
-                <div>Account type is <?php getState($result["account_type"]); ?></div>
-                <div>Balance is <?php getState($result["balance"]); ?></div>
-                <div>Opened date is <?php safer_echo($result["opened_date"]); ?></div>
-                <div>Last updated is <?php safer_echo($result["last_updated"]); ?></div>
+                <div>Account type is <?php safer_echo($result["account_type"]); ?></div>
+                <div>Balance is <?php safer_echo($result["balance"]); ?></div>
             </div>
         </div>
     </div>
